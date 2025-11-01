@@ -69,6 +69,10 @@ function Download-Audio {
         "--audio-format", $Format,
         "--audio-quality", "0",
         "-o", "$OutputPath/%(title)s.%(ext)s",
+        "--embed-metadata",
+        "--embed-thumbnail",
+        "-f", "bestaudio",
+        "--parse-metadata", "playlist_index:%(track_number)s",
         $Url
     )
 
