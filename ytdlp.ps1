@@ -225,18 +225,22 @@ if ($null -ne $config -and $config.PSObject.Properties.Name -contains 'outputPat
     if (-not (Split-Path $cfgOutput -IsAbsolute)) { $cfgOutput = Join-Path $ScriptDir $cfgOutput }
 }
 
-$promptOutput = if ($cfgOutput) { "Enter output directory (press Enter for default: $cfgOutput)" } else { "Enter output directory (press Enter for current directory)" }
-$outputPath = Read-Host $promptOutput
-if ([string]::IsNullOrWhiteSpace($outputPath)) {
-    if ($cfgOutput) { $outputPath = $cfgOutput } else { $outputPath = "." }
+if ($cfgOutput) {
+    Write-Host "`nUsing configured output directory: $cfgOutput" -ForegroundColor Cyan
+    $outputPath = $cfgOutput
+} else {
+    $outputPath = Read-Host "Enter output directory (press Enter for current directory)"
+    if ([string]::IsNullOrWhiteSpace($outputPath)) { $outputPath = "." }
 }
+
+# Ensure output directory exists (create if necessary)
+Ensure-Directory -Path $outputPath
 
 # Get audio format (optional) - use config default if provided
 $cfgFormat = if ($null -ne $config -and $config.PSObject.Properties.Name -contains 'format' -and -not [string]::IsNullOrWhiteSpace($config.format)) { $config.format } else { $null }
 if ($cfgFormat) {
-    Write-Host "`nAvailable formats: mp3, m4a, wav, flac, opus, vorbis"
-    $format = Read-Host "Enter desired audio format (press Enter for default: $cfgFormat)"
-    if ([string]::IsNullOrWhiteSpace($format)) { $format = $cfgFormat }
+    Write-Host "`nUsing configured audio format: $cfgFormat" -ForegroundColor Cyan
+    $format = $cfgFormat
 } else {
     Write-Host "`nAvailable formats: mp3, m4a, wav, flac, opus, vorbis"
     $format = Read-Host "Enter desired audio format (press Enter for mp3)"
