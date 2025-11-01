@@ -1,0 +1,6 @@
+{
+  "enableBatch": true,
+  "urlsFile": "urls.txt",
+  "outputPath": "downloads",
+  "format": "mp3"
+}
